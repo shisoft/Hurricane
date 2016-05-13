@@ -22,11 +22,11 @@
     (when (:pack? orig-data)
       (.delete (File. ^String (package-path id))))))
 
-(defn new-code-block [id & {:keys [ns pack? code] :as data}]
+(defn new-code-block [id & {:keys [ns pack? code meta] :as data}]
   (when pack? (compile-path (package-path id)))
   (new-code-block* id (assoc data :code (when code (eval code)))))
 
-(defn new-code-package [id data]
+(defn new-code-package [id data & [meta]]
   (let [pack-path (package-path id)]
     (UnzipUtil/unzip data pack-path)
-    (new-code-block id :pack? true)))
+    (new-code-block id :pack? true :meta meta)))

@@ -11,7 +11,7 @@
 
 (defn gen-id neb/rand-cell-id)
 
-(defn distribute-code [code-str]
+(defn distribute-code [code-str & [meta]]
   (let [id (gen-id)
         first-list (read-string code-str)
         contains-ns (= 'ns (first first-list))
@@ -20,12 +20,12 @@
         code-block (read-string (str "(do "
                                      (when-not contains-ns "(ns " ns-str ")")
                                      code-str ")"))]
-    (rfi/broadcast-invoke 'hurricane.codebase.base/new-code-block id {:ns ns-sym :code code-block})))
+    (rfi/broadcast-invoke 'hurricane.codebase.base/new-code-block id {:ns ns-sym :code code-block :meta meta})))
 
-(defn distribute-package [package-path]
+(defn distribute-package [package-path & [meta]]
   (assert (.exists (File. (str package-path "/project.clj")))
           "Couldn't find project.clj, which is need for tracking dependices.")
   (let [id (gen-id)
         zip-out-stream (zip-in-mem package-path)
         zip-data (.toByteArray zip-out-stream)]
-    (rfi/broadcast-invoke 'hurricane.codebase.base/new-code-package id zip-data)))
+    (rfi/broadcast-invoke 'hurricane.codebase.base/new-code-package id zip-data meta)))
