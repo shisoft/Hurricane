@@ -7,4 +7,6 @@
                  [com.cemerick/pomegranate "0.3.1"]
                  [leiningen-core "2.6.1"]
                  [cluster-connector "0.1.0-SNAPSHOT"]
-                 [com.climate/claypoole "1.1.2"]])
+                 [com.climate/claypoole "1.1.2"]]
+  :source-paths ["src/clj"]
+  :java-source-paths ["src/java"])
