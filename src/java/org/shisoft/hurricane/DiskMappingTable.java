@@ -32,17 +32,23 @@ public class DiskMappingTable<K, V> implements Map<K, V> {
 
     @Override
     public int size() {
-        return diskMap.size();
+        synchronized (diskMap) {
+            return diskMap.size();
+        }
     }
 
     @Override
     public boolean isEmpty() {
-        return diskMap.isEmpty();
+        synchronized (diskMap) {
+            return diskMap.isEmpty();
+        }
     }
 
     @Override
     public boolean containsKey(Object key) {
-        return diskMap.containsKey(key);
+        synchronized (diskMap) {
+            return diskMap.containsKey(key);
+        }
     }
 
     @Override
@@ -99,7 +105,9 @@ public class DiskMappingTable<K, V> implements Map<K, V> {
 
     @Override
     public V remove(Object key) {
-        return (V) diskMap.remove(key);
+        synchronized (diskMap) {
+            return (V) diskMap.remove(key);
+        }
     }
 
     @Override
@@ -111,12 +119,16 @@ public class DiskMappingTable<K, V> implements Map<K, V> {
 
     @Override
     public void clear() {
-        diskMap.clear();
+        synchronized (diskMap) {
+            diskMap.clear();
+        }
     }
 
     @Override
     public Set<K> keySet() {
-        return diskMap.keySet();
+        synchronized (diskMap) {
+            return diskMap.keySet();
+        }
     }
 
     @Override
