@@ -7,6 +7,8 @@
                  [com.cemerick/pomegranate "0.3.1"]
                  [leiningen-core "2.6.1"]
                  [cluster-connector "0.1.0-SNAPSHOT"]
-                 [com.climate/claypoole "1.1.2"]]
+                 [com.climate/claypoole "1.1.2"]
+                 [net.openhft/koloboke-api-jdk8 "0.6.8"]
+                 [net.openhft/koloboke-impl-jdk8 "0.6.8"]]
   :source-paths ["src/clj"]
   :java-source-paths ["src/java"])
