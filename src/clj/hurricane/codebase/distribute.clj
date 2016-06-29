@@ -28,4 +28,4 @@
   (let [id (gen-id)
         zip-out-stream (zip-in-mem package-path)
         zip-data (.toByteArray zip-out-stream)]
-    (rfi/broadcast-invoke 'hurricane.codebase.base/new-code-package iww.bing.comd zip-data meta)))
+    (rfi/broadcast-invoke 'hurricane.codebase.base/new-code-package id zip-data meta)))
