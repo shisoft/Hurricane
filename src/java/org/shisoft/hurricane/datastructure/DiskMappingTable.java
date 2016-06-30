@@ -68,23 +68,22 @@ public class DiskMappingTable<K, V> implements SeqableMap<K, V> {
 
     @Override
     public V get(Object key) {
-        long loc;
         synchronized (diskMap) {
-            loc = diskMap.getOrDefault(key, -1);
-        }
-        if (loc < 0) {
-            return null;
-        } else {
-            synchronized (raf) {
-                try {
-                    raf.seek(loc);
-                    int dataLen = raf.readInt();
-                    byte[] bs = new byte[dataLen];
-                    raf.read(bs);
-                    return (V) decoder.invoke(bs);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    return null;
+            long loc = diskMap.getOrDefault(key, -1);
+            if (loc < 0) {
+                return null;
+            } else {
+                synchronized (raf) {
+                    try {
+                        raf.seek(loc);
+                        int dataLen = raf.readInt();
+                        byte[] bs = new byte[dataLen];
+                        raf.read(bs);
+                        return (V) decoder.invoke(bs);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        return null;
+                    }
                 }
             }
         }
@@ -92,25 +91,22 @@ public class DiskMappingTable<K, V> implements SeqableMap<K, V> {
 
     @Override
     public V put(K key, V value) {
-        byte[] bs = (byte[]) encoder.invoke(value);
-        int dataLen = bs.length;
-        long totalLen = dataLen + Integer.BYTES;
-        long loc = current.getAndAdd(totalLen);
-        synchronized (raf) {
+        synchronized (diskMap) {
+            byte[] bs = (byte[]) encoder.invoke(value);
+            int dataLen = bs.length;
+            long totalLen = dataLen + Integer.BYTES;
+            long loc = current.getAndAdd(totalLen);
             try {
+                raf.seek(loc);
                 raf.writeInt(dataLen);
-                for (byte b : bs) {
-                    raf.writeByte(b);
-                }
-                synchronized (diskMap) {
-                    if (seqRead) {
-                        if (diskMap.containsKey(key)){
-                            seqList.remove(key);
-                        }
-                        seqList.add(key);
+                raf.write(bs);
+                if (seqRead) {
+                    if (diskMap.containsKey(key)){
+                        seqList.remove(key);
                     }
-                    diskMap.put(key, loc);
+                    seqList.add(key);
                 }
+                diskMap.put(key, loc);
                 return value;
             } catch (IOException e) {
                 e.printStackTrace();
