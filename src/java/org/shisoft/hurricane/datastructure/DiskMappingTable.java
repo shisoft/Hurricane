@@ -161,6 +161,10 @@ public class DiskMappingTable<K, V> implements SeqableMap<K, V> {
 
     @Override
     public Collection<K> keyColl() {
-        return seqList;
+        if (seqRead) {
+            return seqList;
+        } else {
+            return diskMap.keySet();
+        }
     }
 }
