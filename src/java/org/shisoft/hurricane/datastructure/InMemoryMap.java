@@ -27,6 +27,11 @@ public class InMemoryMap<K, V> implements SeqableMap<K,V> {
     }
 
     @Override
+    public void dispose() {
+
+    }
+
+    @Override
     public int size() {
         return intialMap.size();
     }

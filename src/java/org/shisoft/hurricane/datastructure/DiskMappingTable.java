@@ -5,6 +5,7 @@ import net.openhft.koloboke.collect.map.hash.HashObjLongMap;
 import net.openhft.koloboke.collect.map.hash.HashObjLongMaps;
 import org.shisoft.hurricane.BufferedRandomAccessFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.*;
@@ -22,6 +23,7 @@ public class DiskMappingTable<K, V> implements SeqableMap<K, V> {
     private final IFn decoder;
     private boolean seqRead;
     private List<K> seqList;
+    private String filePath;
 
 
     public DiskMappingTable(String filePath, IFn encoder, IFn decoder, boolean seqRead) throws IOException {
@@ -31,6 +33,7 @@ public class DiskMappingTable<K, V> implements SeqableMap<K, V> {
         this.encoder = encoder;
         this.decoder = decoder;
         this.seqRead = seqRead;
+        this.filePath = filePath;
         if (seqRead) {
             this.seqList = new ArrayList<K>();
         }
@@ -162,5 +165,11 @@ public class DiskMappingTable<K, V> implements SeqableMap<K, V> {
         } else {
             return diskMap.keySet();
         }
+    }
+
+    @Override
+    public void dispose() {
+        diskMap.clear();
+        new File(filePath).delete();
     }
 }

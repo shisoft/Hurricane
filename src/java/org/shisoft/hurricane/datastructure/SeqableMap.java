@@ -8,4 +8,5 @@ import java.util.Map;
  */
 public interface SeqableMap<K, V> extends Map<K, V> {
     public Collection<K> keyColl();
+    public void dispose();
 }
