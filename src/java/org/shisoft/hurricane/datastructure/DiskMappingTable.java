@@ -76,17 +76,15 @@ public class DiskMappingTable<K, V> implements SeqableMap<K, V> {
             if (loc < 0) {
                 return null;
             } else {
-                synchronized (raf) {
-                    try {
-                        raf.seek(loc);
-                        int dataLen = raf.readInt();
-                        byte[] bs = new byte[dataLen];
-                        raf.read(bs);
-                        return (V) decoder.invoke(bs);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        return null;
-                    }
+                try {
+                    raf.seek(loc);
+                    int dataLen = raf.readInt();
+                    byte[] bs = new byte[dataLen];
+                    raf.read(bs);
+                    return (V) decoder.invoke(bs);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return null;
                 }
             }
         }
@@ -168,8 +166,9 @@ public class DiskMappingTable<K, V> implements SeqableMap<K, V> {
     }
 
     @Override
-    public void dispose() {
+    public void dispose() throws IOException {
         diskMap.clear();
+        raf.close();
         new File(filePath).delete();
     }
 }

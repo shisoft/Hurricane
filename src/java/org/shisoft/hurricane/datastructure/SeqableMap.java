@@ -1,5 +1,6 @@
 package org.shisoft.hurricane.datastructure;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
 
@@ -8,5 +9,5 @@ import java.util.Map;
  */
 public interface SeqableMap<K, V> extends Map<K, V> {
     public Collection<K> keyColl();
-    public void dispose();
+    public void dispose() throws IOException;
 }
